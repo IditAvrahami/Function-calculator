@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/include
+# Install script for directory: C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/include
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/install/x64-Debug (default)")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/idita/Source/Repos/ex03_idit_avrahami_daniel_or_abayev/out/install/x64-Debug (default)")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

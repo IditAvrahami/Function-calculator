@@ -7,22 +7,25 @@
 #include "Add.h"
 #include "Comp.h"
 #include "Log.h"
+#include "NotDigitException.h"
 
 #include <istream>
 #include <ostream>
 #include <iomanip>
 #include <sstream>
 
+
 FunctionCalculator::FunctionCalculator(std::istream& istr, std::ostream& ostr)
-    : m_actions(createActions()), m_functions(createFunctions()), m_istr(istr), m_ostr(ostr)
+    : m_maxSize(300), m_actions(createActions()), m_functions(createFunctions()), m_istr(istr), m_ostr(ostr)
 {
 }
 
 void FunctionCalculator::run()
 {
+        firstResize();
+    
     m_ostr << std::setprecision(2) << std::fixed;
-    do
-    {
+    do{
         m_ostr << '\n';
         printFunctions();
         m_ostr << "Enter command ('help' for the list of available commands): ";
@@ -37,6 +40,7 @@ void FunctionCalculator::eval()
     {
         auto x = 0.;
         m_istr >> x;
+        excLetter();
         auto sstr = std::ostringstream();
         sstr << std::setprecision(2) << std::fixed << x;
         m_ostr << m_functions[*i]->to_string(sstr.str())
@@ -48,23 +52,40 @@ void FunctionCalculator::eval()
 
 void FunctionCalculator::poly()
 {
-    auto n = 0;
-    m_istr >> n;
-    auto coeffs = std::vector<double>(n);
-    for (auto& coeff : coeffs)
+    if (m_functions.size() < m_maxSize)
     {
-        m_istr >> coeff;
+        auto n = 0;
+        m_istr >> n;
+        excLetter(); // to degree of poly
+        excPositive(n);
+        auto coeffs = std::vector<double>(n);
+        for (auto& coeff : coeffs)
+        {
+            m_istr >> coeff;
+            excLetter();
+        }
+        m_functions.push_back(std::make_shared<Poly>(coeffs));
     }
-    m_functions.push_back(std::make_shared<Poly>(coeffs));
+    else
+    {
+        throw std::out_of_range("Too much functions\n");
+    }
 }
 
 void FunctionCalculator::log()
 {
-    auto base = 0;
-    m_istr >> base;
-    if (auto f = readFunctionIndex(); f)
+    if (m_functions.size() < m_maxSize)
     {
-        m_functions.push_back(std::make_shared<Log>(base, m_functions[*f]));
+        auto base = 0;
+        m_istr >> base;
+        if (auto f = readFunctionIndex(); f)
+        {
+            m_functions.push_back(std::make_shared<Log>(base, m_functions[*f]));
+        }
+    }
+    else
+    {
+        throw std::out_of_range("Too much functions\n");
     }
 }
 
@@ -92,6 +113,99 @@ void FunctionCalculator::exit()
     m_running = false;
 }
 
+void FunctionCalculator::resize()
+{
+    int wanted, sure;
+    m_istr >> wanted;
+    excLetter();
+    excRange(2, 100, wanted, "the range between 2-100\n");
+    if (wanted < m_functions.size())
+    { 
+       sure = yesOrNo();
+       if(sure == 1)
+          m_functions.resize(wanted);
+    }
+    m_maxSize = wanted;
+}
+
+void FunctionCalculator::firstResize()
+{
+    while (m_maxSize == 300)
+    {
+        try {
+            m_ostr << "please enter number of wanted functions: ";
+            resize();
+        }
+        catch (std::out_of_range& e)
+        {
+            m_ostr << e.what();
+            firstResize();
+        }
+        catch (NotDigitException& e)
+        {
+            m_ostr << e.what();
+            firstResize();
+        }
+
+    }
+}
+
+int FunctionCalculator::yesOrNo()
+{
+    int wanted = 0;
+    while (wanted != 1 && wanted != 2)
+    {
+        try
+        {
+            m_ostr << "Are you sure ?\nEnter 1 to yes or 2 to no";
+            m_istr >> wanted;
+            if (!m_istr)
+            {
+                m_istr.clear();
+                m_istr.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                throw NotDigitException();
+            }
+            if (wanted < 1 || wanted > 2)
+            {
+                throw std::out_of_range("wanted number is not 1/2\n");
+            }
+        }
+        catch (const std::out_of_range& e)
+        {
+            m_ostr << e.what();
+        }
+        catch (NotDigitException& e)
+        {
+            m_ostr << e.what();
+        }
+      
+    }
+    return wanted;
+}
+
+void FunctionCalculator::excRange(const int start, const int end, const int wanted, const std::string error)const
+{
+    if (wanted < start || wanted > end)
+        throw std::out_of_range(error);
+}
+
+void FunctionCalculator::excPositive(const int wanted)const
+{
+    if (wanted < 0)
+        throw std::out_of_range("This is negative coeff\n");
+}
+
+void FunctionCalculator::excLetter()const
+{
+    if (!m_istr)
+    {
+        m_istr.clear();
+        m_istr.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        throw NotDigitException();
+    }
+}
+
+
 void FunctionCalculator::printFunctions() const
 {
     m_ostr << "List of available gates:\n";
@@ -106,11 +220,10 @@ std::optional<int> FunctionCalculator::readFunctionIndex() const
 {
     auto i = 0;
     m_istr >> i;
-    if (i >= m_functions.size())
-    {
-        m_ostr << "Function #" << i << " doesn't exist\n";
-        return {};
-    }
+    excLetter();
+    excPositive(i);
+    excRange(0, m_functions.size(), i, "Function doesn't exist\n");
+   
     return i;
 }
 
@@ -132,8 +245,9 @@ FunctionCalculator::Action FunctionCalculator::readAction() const
 
 void FunctionCalculator::runAction(Action action)
 {
-    switch (action)
-    {
+    try {
+        switch (action)
+        {
         default:
             m_ostr << "Unknown enum entry used!\n";
             break;
@@ -151,7 +265,20 @@ void FunctionCalculator::runAction(Action action)
         case Action::Del:  del();              break;
         case Action::Help: help();             break;
         case Action::Exit: exit();             break;
+        case Action::Resize: resize();         break;
+
+        }
+    
     }
+    catch (NotDigitException& e)
+    {
+        m_ostr << e.what();      
+    }
+    catch (std::out_of_range& e)
+    {
+        m_ostr << e.what();
+    }
+
 }
 
 FunctionCalculator::ActionMap FunctionCalculator::createActions()
@@ -205,6 +332,11 @@ FunctionCalculator::ActionMap FunctionCalculator::createActions()
             "exit",
             " - exit the program",
             Action::Exit
+        },
+        {
+            "resize",
+            " - resize number of functions (valid : 2-100)",
+            Action::Resize
         }
     };
 }

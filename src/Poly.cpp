@@ -68,3 +68,4 @@ std::string Poly::to_string(const std::string& arg) const
 
     return sstr.str();
 }
+

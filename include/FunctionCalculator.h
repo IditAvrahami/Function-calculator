@@ -5,6 +5,7 @@
 #include <string>
 #include <iosfwd>
 #include <optional>
+#include <ostream>
 
 class Function;
 
@@ -21,13 +22,27 @@ private:
     void del();
     void help();
     void exit();
+    void resize();
+    void firstResize();
+    int yesOrNo();
+    void excLetter()const;
+    void excRange(const int start, const int end, const int wanted ,const std::string error)const;
+    void excPositive(const int wanted)const;
+   
 
     template <typename FuncType>
     void binaryFunc()
     {
-        if (auto f0 = readFunctionIndex(), f1 = readFunctionIndex(); f0 && f1)
+        if (m_functions.size() < m_maxSize)
         {
-            m_functions.push_back(std::make_shared<FuncType>(m_functions[*f0], m_functions[*f1]));
+            if (auto f0 = readFunctionIndex(), f1 = readFunctionIndex(); f0 && f1)
+            {
+                m_functions.push_back(std::make_shared<FuncType>(m_functions[*f0], m_functions[*f1]));
+            }
+        }
+        else
+        {
+            throw std::out_of_range("Too much functions\n");
         }
     }
 
@@ -45,6 +60,7 @@ private:
         Del,
         Help,
         Exit,
+        Resize,
     };
 
     struct ActionDetails
@@ -57,6 +73,7 @@ private:
     using ActionMap = std::vector<ActionDetails>;
     using FunctionList = std::vector<std::shared_ptr<Function>>;
 
+    int m_maxSize;
     const ActionMap m_actions;
     FunctionList m_functions;
     bool m_running = true;
