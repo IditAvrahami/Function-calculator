@@ -78,3 +78,13 @@
 7	698	642024775	CMakeFiles/oop2_ex01.dir/src/main.cpp.obj	c501a0d30ddc40
 0	923	642024775	CMakeFiles/oop2_ex01.dir/src/FunctionCalculator.cpp.obj	39dc4a71fb7a702a
 923	1118	642024776	oop2_ex01.exe	a8650661f081a5db
+8	1403	642025815	CMakeFiles/oop2_ex01.dir/src/Ln.cpp.obj	b797cd21e0fefa36
+15	1404	642025815	CMakeFiles/oop2_ex01.dir/src/Log.cpp.obj	22cd3ba6a10a043f
+1	1493	642025815	CMakeFiles/oop2_ex01.dir/src/FunctionCalculator.cpp.obj	39dc4a71fb7a702a
+1493	1835	642025815	oop2_ex01.exe	a8650661f081a5db
+1	731	642025968	CMakeFiles/oop2_ex01.dir/src/Ln.cpp.obj	b797cd21e0fefa36
+731	942	642025968	oop2_ex01.exe	a8650661f081a5db
+0	1352	642026118	CMakeFiles/oop2_ex01.dir/src/FunctionCalculator.cpp.obj	39dc4a71fb7a702a
+1353	1621	642026119	oop2_ex01.exe	a8650661f081a5db
+1	1418	642026961	CMakeFiles/oop2_ex01.dir/src/FunctionCalculator.cpp.obj	39dc4a71fb7a702a
+1418	1669	642026961	oop2_ex01.exe	a8650661f081a5db

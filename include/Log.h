@@ -14,4 +14,5 @@ public:
 private:
     int m_base;
     const std::shared_ptr<Function> m_func;
+    void excPositive(const double wanted)const;
 };

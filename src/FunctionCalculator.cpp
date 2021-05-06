@@ -78,6 +78,10 @@ void FunctionCalculator::log()
     {
         auto base = 0;
         m_istr >> base;
+        excLetter();
+        excPositive(base);
+        if (base == 1)
+            throw std::out_of_range("Base cant be 1\n");
         if (auto f = readFunctionIndex(); f)
         {
             m_functions.push_back(std::make_shared<Log>(base, m_functions[*f]));
@@ -231,7 +235,7 @@ FunctionCalculator::Action FunctionCalculator::readAction() const
 {
     auto action = std::string();
     m_istr >> action;
-
+    
     for (decltype(m_actions.size()) i = 0; i < m_actions.size(); ++i)
     {
         if (action == m_actions[i].command)
