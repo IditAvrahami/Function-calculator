@@ -8,6 +8,7 @@
 #include "Comp.h"
 #include "Log.h"
 #include "NotDigitException.h"
+#include "NotValidCommand.h"
 
 #include <istream>
 #include <ostream>
@@ -212,6 +213,7 @@ void FunctionCalculator::excLetter()const
 
 void FunctionCalculator::printFunctions() const
 {
+    m_ostr << "you can have " << m_maxSize << " functions.\n";
     m_ostr << "List of available gates:\n";
     for (decltype(m_functions.size()) i = 0; i < m_functions.size(); ++i)
     {
@@ -235,7 +237,7 @@ FunctionCalculator::Action FunctionCalculator::readAction() const
 {
     auto action = std::string();
     m_istr >> action;
-    
+
     for (decltype(m_actions.size()) i = 0; i < m_actions.size(); ++i)
     {
         if (action == m_actions[i].command)
@@ -257,7 +259,7 @@ void FunctionCalculator::runAction(Action action)
             break;
 
         case Action::Invalid:
-            m_ostr << "Command not found\n";
+            throw NotValidCommand();
             break;
 
         case Action::Eval: eval();             break;
@@ -282,7 +284,10 @@ void FunctionCalculator::runAction(Action action)
     {
         m_ostr << e.what();
     }
-
+    catch (NotValidCommand& e)
+    {
+        m_ostr << e.what();
+    }
 }
 
 FunctionCalculator::ActionMap FunctionCalculator::createActions()
