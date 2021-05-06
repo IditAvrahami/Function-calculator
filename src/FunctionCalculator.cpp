@@ -32,6 +32,8 @@ void FunctionCalculator::run()
         m_ostr << "Enter command ('help' for the list of available commands): ";
         const auto action = readAction();
         runAction(action);
+        m_istr.clear();
+        m_istr.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     } while (m_running);
 }
 
