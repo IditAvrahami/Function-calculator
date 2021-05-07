@@ -9,11 +9,14 @@
 #include "Log.h"
 #include "NotDigitException.h"
 #include "NotValidCommand.h"
+#include "CantOPenFile.h"
 
 #include <istream>
+#include <fstream>
 #include <ostream>
 #include <iomanip>
 #include <sstream>
+#include <ios>
 
 
 FunctionCalculator::FunctionCalculator(std::istream& istr, std::ostream& ostr)
@@ -202,6 +205,19 @@ void FunctionCalculator::excPositive(const int wanted)const
         throw std::out_of_range("This is negative coeff\n");
 }
 
+void FunctionCalculator::read()const
+{
+    std::string path;
+    m_istr >> path;
+    std::ifstream file;
+    file.open(path);
+    if (!file.is_open())
+        throw CantOpenFile();
+    std::istream *temp;
+    temp = &m_istr; // more nickname to m_istr
+    m_istr = &file;
+}
+
 void FunctionCalculator::excLetter()const
 {
     if (!m_istr)
@@ -274,7 +290,7 @@ void FunctionCalculator::runAction(Action action)
         case Action::Help: help();             break;
         case Action::Exit: exit();             break;
         case Action::Resize: resize();         break;
-
+        case Action::Read: read();             break;
         }
     
     }
@@ -348,6 +364,11 @@ FunctionCalculator::ActionMap FunctionCalculator::createActions()
             "resize",
             " - resize number of functions (valid : 2-100)",
             Action::Resize
+        },
+        {
+            "read",
+            " - read from file (cant do command read from file)",
+            Action::Read
         }
     };
 }

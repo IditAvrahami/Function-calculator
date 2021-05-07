@@ -28,6 +28,7 @@ private:
     void excLetter()const;
     void excRange(const int start, const int end, const int wanted ,const std::string error)const;
     void excPositive(const int wanted)const;
+    void read()const;
     
    
 
@@ -62,6 +63,7 @@ private:
         Help,
         Exit,
         Resize,
+        Read,
     };
 
     struct ActionDetails
