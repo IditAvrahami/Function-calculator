@@ -30,6 +30,7 @@ private:
     void excPositive(const int wanted)const;
     void read();
     
+    
    
 
     template <typename FuncType>
@@ -71,8 +72,9 @@ private:
         std::string command;
         std::string description;
         Action action;
+        int arguments;///////////////////////////
     };
-
+    void checkArgument(const Action& action)const;
     using ActionMap = std::vector<ActionDetails>;
     using FunctionList = std::vector<std::shared_ptr<Function>>;
 
@@ -80,6 +82,7 @@ private:
     const ActionMap m_actions;
     FunctionList m_functions;
     bool m_running = true;
+    bool m_inFile = false;
     std::istream* m_istr;
     std::ostream& m_ostr;
 

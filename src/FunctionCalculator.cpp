@@ -11,6 +11,7 @@
 #include "NotValidCommand.h"
 #include "CantOPenFile.h"
 #include "EndOfFile.h"
+#include "ArgumentProblem.h"
 
 #include <istream>
 #include <fstream>
@@ -34,7 +35,10 @@ void FunctionCalculator::run()
         m_ostr << '\n';
         printFunctions();
         m_ostr << "Enter command ('help' for the list of available commands): ";
+
         const auto action = readAction();
+        if (m_inFile)
+            checkArgument(action);
         runAction(action);
         (*m_istr).clear();
         (*m_istr).ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -169,7 +173,7 @@ int FunctionCalculator::yesOrNo()
     {
         try
         {
-            m_ostr << "Are you sure ?\nEnter 1 to yes or 2 to no";
+            m_ostr << "Are you sure ?\nEnter 1 to yes or 2 to no\n";
             *m_istr >> wanted;
             if (!(*m_istr))
             {
@@ -177,10 +181,11 @@ int FunctionCalculator::yesOrNo()
                 (*m_istr).ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw NotDigitException();
             }
-            if (wanted < 1 || wanted > 2)
+            excRange(1, 2, wanted, "wanted number is not 1/2\n");
+            /*if (wanted < 1 || wanted > 2)
             {
                 throw std::out_of_range("wanted number is not 1/2\n");
-            }
+            }*/
         }
         catch (const std::out_of_range& e)
         {
@@ -215,19 +220,58 @@ void FunctionCalculator::read()
     file.open(path);
     if (!file.is_open())
         throw CantOpenFile();
-    std::istream *temp;
+    m_inFile = true;
+    std::istream *temp;//temp stream to the time use the file
     temp = m_istr; // more nickname to m_istr
     m_istr = &file;
-    try
+    while (m_inFile)
     {
-        run();
-    }
-    catch (const EndOfFile &e)
-    {
-        file.close();
-        m_istr = temp;
+        try
+        {
+            run();
+        }
+        catch (const EndOfFile& e)
+        {
+            file.close();
+            m_istr = temp;
+            m_inFile = false;
+        }
+        catch (const ArgumentProblem& e)
+        {
+            
+        }
     }
     
+}
+
+void FunctionCalculator::checkArgument(const Action& action)const
+{
+    int len = (*m_istr).tellg();
+    std::string line;
+    // Read line
+    getline((*m_istr), line);
+    
+    int counter = 0, first = 0;
+
+    for (size_t i = 0; i < line.size() ; i++)
+    {
+        if (i == 0)
+            first = line[i];
+        if (line[i] == ' ')
+            counter++;
+    }
+    if (action == Action::Resize && counter != 1)
+        throw ArgumentProblem();
+    else if (action == Action::Poly && (first != (counter-1)))
+    { 
+        throw ArgumentProblem();
+    }
+    else if(counter != 2)
+        throw ArgumentProblem();
+
+    // Return to position before "Read line".
+    (*m_istr).seekg(len, std::ios_base::beg);
+
 }
 
 void FunctionCalculator::excLetter()const
