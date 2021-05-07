@@ -137,7 +137,7 @@ void FunctionCalculator::resize()
     excRange(2, 100, wanted, "the range between 2-100\n");
     if (wanted < m_functions.size())
     { 
-       sure = yesOrNo();
+       sure = yesOrNo("are you sure?\n");
        if(sure == 1)
           m_functions.resize(wanted);
     }
@@ -166,14 +166,15 @@ void FunctionCalculator::firstResize()
     }
 }
 
-int FunctionCalculator::yesOrNo()
+int FunctionCalculator::yesOrNo(std::string message)
 {
     int wanted = 0;
     while (wanted != 1 && wanted != 2)
     {
         try
         {
-            m_ostr << "Are you sure ?\nEnter 1 to yes or 2 to no\n";
+            m_ostr << message;
+            m_ostr << "Enter 1 to yes or 2 to no\n";
             *m_istr >> wanted;
             if (!(*m_istr))
             {
@@ -238,7 +239,10 @@ void FunctionCalculator::read()
         }
         catch (const ArgumentProblem& e)
         {
-            
+            m_istr = temp;
+            int wanted = yesOrNo("do you want to continue the file or not?\n");
+            if (wanted != 1)
+                m_inFile = false;
         }
     }
     

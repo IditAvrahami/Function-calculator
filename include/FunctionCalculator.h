@@ -24,7 +24,7 @@ private:
     void exit();
     void resize();
     void firstResize();
-    int yesOrNo();
+    int yesOrNo(std::string message);
     void excLetter()const;
     void excRange(const int start, const int end, const int wanted ,const std::string error)const;
     void excPositive(const int wanted)const;
