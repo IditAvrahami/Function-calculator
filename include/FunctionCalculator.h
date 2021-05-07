@@ -12,7 +12,7 @@ class Function;
 class FunctionCalculator
 {
 public:
-    FunctionCalculator(std::istream& istr, std::ostream& ostr);
+    FunctionCalculator(std::istream* istr, std::ostream& ostr);
     void run();
 
 private:
@@ -28,7 +28,7 @@ private:
     void excLetter()const;
     void excRange(const int start, const int end, const int wanted ,const std::string error)const;
     void excPositive(const int wanted)const;
-    void read()const;
+    void read();
     
    
 
@@ -80,7 +80,7 @@ private:
     const ActionMap m_actions;
     FunctionList m_functions;
     bool m_running = true;
-    std::istream& m_istr;
+    std::istream* m_istr;
     std::ostream& m_ostr;
 
     std::optional<int> readFunctionIndex() const;

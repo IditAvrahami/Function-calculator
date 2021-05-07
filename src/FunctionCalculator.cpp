@@ -10,6 +10,7 @@
 #include "NotDigitException.h"
 #include "NotValidCommand.h"
 #include "CantOPenFile.h"
+#include "EndOfFile.h"
 
 #include <istream>
 #include <fstream>
@@ -19,7 +20,7 @@
 #include <ios>
 
 
-FunctionCalculator::FunctionCalculator(std::istream& istr, std::ostream& ostr)
+FunctionCalculator::FunctionCalculator(std::istream* istr, std::ostream& ostr)
     : m_maxSize(300), m_actions(createActions()), m_functions(createFunctions()), m_istr(istr), m_ostr(ostr)
 {
 }
@@ -35,8 +36,8 @@ void FunctionCalculator::run()
         m_ostr << "Enter command ('help' for the list of available commands): ";
         const auto action = readAction();
         runAction(action);
-        m_istr.clear();
-        m_istr.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        (*m_istr).clear();
+        (*m_istr).ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     } while (m_running);
 }
 
@@ -45,7 +46,7 @@ void FunctionCalculator::eval()
     if (auto i = readFunctionIndex(); i)
     {
         auto x = 0.;
-        m_istr >> x;
+        *m_istr >> x;
         excLetter();
         auto sstr = std::ostringstream();
         sstr << std::setprecision(2) << std::fixed << x;
@@ -61,13 +62,13 @@ void FunctionCalculator::poly()
     if (m_functions.size() < m_maxSize)
     {
         auto n = 0;
-        m_istr >> n;
+        *m_istr >> n;
         excLetter(); // to degree of poly
         excPositive(n);
         auto coeffs = std::vector<double>(n);
         for (auto& coeff : coeffs)
         {
-            m_istr >> coeff;
+            *m_istr >> coeff;
             excLetter();
         }
         m_functions.push_back(std::make_shared<Poly>(coeffs));
@@ -83,7 +84,7 @@ void FunctionCalculator::log()
     if (m_functions.size() < m_maxSize)
     {
         auto base = 0;
-        m_istr >> base;
+        *m_istr >> base;
         excLetter();
         excPositive(base);
         if (base == 1)
@@ -120,13 +121,14 @@ void FunctionCalculator::help()
 void FunctionCalculator::exit()
 {
     m_ostr << "Goodbye!\n";
+    
     m_running = false;
 }
 
 void FunctionCalculator::resize()
 {
     int wanted, sure;
-    m_istr >> wanted;
+    *m_istr >> wanted;
     excLetter();
     excRange(2, 100, wanted, "the range between 2-100\n");
     if (wanted < m_functions.size())
@@ -168,11 +170,11 @@ int FunctionCalculator::yesOrNo()
         try
         {
             m_ostr << "Are you sure ?\nEnter 1 to yes or 2 to no";
-            m_istr >> wanted;
-            if (!m_istr)
+            *m_istr >> wanted;
+            if (!(*m_istr))
             {
-                m_istr.clear();
-                m_istr.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                (*m_istr).clear();
+                (*m_istr).ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw NotDigitException();
             }
             if (wanted < 1 || wanted > 2)
@@ -202,28 +204,38 @@ void FunctionCalculator::excRange(const int start, const int end, const int want
 void FunctionCalculator::excPositive(const int wanted)const
 {
     if (wanted < 0)
-        throw std::out_of_range("This is negative coeff\n");
+        throw std::out_of_range("cannot get negative number\n");
 }
 
-void FunctionCalculator::read()const
+void FunctionCalculator::read()
 {
     std::string path;
-    m_istr >> path;
+    *m_istr >> path;
     std::ifstream file;
     file.open(path);
     if (!file.is_open())
         throw CantOpenFile();
     std::istream *temp;
-    temp = &m_istr; // more nickname to m_istr
+    temp = m_istr; // more nickname to m_istr
     m_istr = &file;
+    try
+    {
+        run();
+    }
+    catch (const EndOfFile &e)
+    {
+        file.close();
+        m_istr = temp;
+    }
+    
 }
 
 void FunctionCalculator::excLetter()const
 {
-    if (!m_istr)
+    if (!(*m_istr))
     {
-        m_istr.clear();
-        m_istr.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        (*m_istr).clear();
+        (*m_istr).ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         throw NotDigitException();
     }
 }
@@ -243,10 +255,10 @@ void FunctionCalculator::printFunctions() const
 std::optional<int> FunctionCalculator::readFunctionIndex() const
 {
     auto i = 0;
-    m_istr >> i;
+    *m_istr >> i;
     excLetter();
     excPositive(i);
-    excRange(0, m_functions.size(), i, "Function doesn't exist\n");
+    excRange(0, m_functions.size() - 1, i, "Function doesn't exist\n");
    
     return i;
 }
@@ -254,8 +266,9 @@ std::optional<int> FunctionCalculator::readFunctionIndex() const
 FunctionCalculator::Action FunctionCalculator::readAction() const
 {
     auto action = std::string();
-    m_istr >> action;
-
+    *m_istr >> action;
+    if (m_istr->eof())
+        throw EndOfFile();
     for (decltype(m_actions.size()) i = 0; i < m_actions.size(); ++i)
     {
         if (action == m_actions[i].command)
@@ -303,6 +316,10 @@ void FunctionCalculator::runAction(Action action)
         m_ostr << e.what();
     }
     catch (NotValidCommand& e)
+    {
+        m_ostr << e.what();
+    }
+    catch (CantOpenFile& e)
     {
         m_ostr << e.what();
     }

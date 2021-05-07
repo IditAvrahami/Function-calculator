@@ -4,5 +4,5 @@
 
 int main()
 {
-    FunctionCalculator(std::cin, std::cout).run();
+    FunctionCalculator(&std::cin, std::cout).run();
 }
