@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev
+# Install script for directory: C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/idita/Source/Repos/ex03_idit_avrahami_daniel_or_abayev/out/install/x64-Debug (default)")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/install/x64-Debug (default)")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,12 +34,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)/include/cmake_install.cmake")
+  include("C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)/include/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)/src/cmake_install.cmake")
+  include("C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)/src/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -23,7 +23,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)"
+			"value" : "c:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -499,7 +499,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev"
+			"value" : "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -511,7 +511,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "C:/Users/idita/Source/Repos/ex03_idit_avrahami_daniel_or_abayev/out/install/x64-Debug (default)"
+			"value" : "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/install/x64-Debug (default)"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -1035,7 +1035,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)"
+			"value" : "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)"
 		},
 		{
 			"name" : "oop2_ex01_SOURCE_DIR",
@@ -1047,7 +1047,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev"
+			"value" : "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev"
 		}
 	],
 	"kind" : "cache",

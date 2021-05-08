@@ -65,7 +65,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "oop2_ex01::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-oop2_ex01-Debug-ef1eec6fec22d6839473.json",
+					"jsonFile" : "target-oop2_ex01-Debug-4d70903b17f3b911ad00.json",
 					"name" : "oop2_ex01",
 					"projectIndex" : 0
 				}
@@ -75,8 +75,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)",
-		"source" : "C:/Users/idita/source/repos/ex03_idit_avrahami_daniel_or_abayev"
+		"build" : "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev/out/build/x64-Debug (default)",
+		"source" : "C:/Users/dan52/OneDrive/שולחן העבודה/ex03_idit_avrahami_daniel_or_abayev"
 	},
 	"version" : 
 	{

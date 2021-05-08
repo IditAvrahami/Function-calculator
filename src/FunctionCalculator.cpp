@@ -241,8 +241,15 @@ void FunctionCalculator::read()
         {
             m_istr = temp;
             int wanted = yesOrNo("do you want to continue the file or not?\n");
-            if (wanted != 1)
+            if (wanted == 2)
+            {
                 m_inFile = false;
+                file.close();
+            }
+            else 
+            {
+                m_istr = &file;
+            }
         }
     }
     
@@ -250,30 +257,53 @@ void FunctionCalculator::read()
 
 void FunctionCalculator::checkArgument(const Action& action)const
 {
+    if (action == Action::Help || action == Action::Exit)
+        return;
     int len = (*m_istr).tellg();
     std::string line;
+    //for ignoring whitespaces
+    std::stringstream forCount;
     // Read line
     getline((*m_istr), line);
-    
-    int counter = 0, first = 0;
-
+    //make the line input of the stringstream
+    forCount << line;
+    //check number of variables, the check of valid value is in the funcs
+    std::string readVariable;
+    int counter = 0;
+    int first;
+    //count the number of variables in the line
+    while (!forCount.eof())
+    {
+        forCount >> readVariable;
+        counter++;
+    }
+    /*int counter = 0, first = 0;
     for (size_t i = 0; i < line.size() ; i++)
     {
         if (i == 0)
             first = line[i];
         if (line[i] == ' ')
             counter++;
+    }*/
+
+    if (action == Action::Resize /*&& counter != 1*/)
+    {
+        if (counter != 1)
+            throw ArgumentProblem();
     }
-    if (action == Action::Resize && counter != 1)
-        throw ArgumentProblem();
-    else if (action == Action::Poly && (first != (counter-1)))
-    { 
-        throw ArgumentProblem();
+    else if (action == Action::Poly /*&& (first != (counter-1))*/)
+    {//clear the forCount
+        forCount << line;
+        forCount >> first;
+        if (first != counter - 1)
+            throw ArgumentProblem();
     }
-    else if(counter != 2)
+    //if help do the func anyway
+    else if(counter != 2 )//&& action != Action::Help && action != Action::Exit)
         throw ArgumentProblem();
 
     // Return to position before "Read line".
+    //(*m_istr).seekg(-len, std::ios_base::cur);
     (*m_istr).seekg(len, std::ios_base::beg);
 
 }
