@@ -13,6 +13,7 @@
 #include "EndOfFile.h"
 #include "ArgumentProblem.h"
 
+#include<iostream>
 #include <istream>
 #include <fstream>
 #include <ostream>
@@ -20,6 +21,11 @@
 #include <sstream>
 #include <ios>
 
+const int FIRSTRESIZE = 300;
+const int MINSIZE = 2;
+const int MAXSIZE = 100;
+const int YES = 1;
+const int NO = 2;
 
 FunctionCalculator::FunctionCalculator(std::istream* istr, std::ostream& ostr)
     : m_maxSize(300), m_actions(createActions()), m_functions(createFunctions()), m_istr(istr), m_ostr(ostr)
@@ -134,11 +140,11 @@ void FunctionCalculator::resize()
     int wanted, sure;
     *m_istr >> wanted;
     excLetter();
-    excRange(2, 100, wanted, "the range between 2-100\n");
+    excRange(MINSIZE, MAXSIZE, wanted, "the range between 2-100\n");
     if (wanted < m_functions.size())
     { 
        sure = yesOrNo("are you sure?\n");
-       if(sure == 1)
+       if(sure == YES)
           m_functions.resize(wanted);
     }
     m_maxSize = wanted;
@@ -146,7 +152,7 @@ void FunctionCalculator::resize()
 
 void FunctionCalculator::firstResize()
 {
-    while (m_maxSize == 300)
+    while (m_maxSize == FIRSTRESIZE)
     {
         try {
             m_ostr << "please enter number of wanted functions: ";
@@ -174,8 +180,9 @@ int FunctionCalculator::yesOrNo(std::string message)
         try
         {
             m_ostr << message;
-            m_ostr << "Enter 1 to yes or 2 to no\n";
-            *m_istr >> wanted;
+            m_ostr << "Enter 1 to yes or 2 to no\n";\
+            //read from standart input for case in file inside file
+            std::cin >> wanted;
             if (!(*m_istr))
             {
                 (*m_istr).clear();
@@ -241,7 +248,7 @@ void FunctionCalculator::read()
         {
             m_istr = temp;
             int wanted = yesOrNo("do you want to continue the file or not?\n");
-            if (wanted == 2)
+            if (wanted == NO)
             {
                 m_inFile = false;
                 file.close();
@@ -277,33 +284,29 @@ void FunctionCalculator::checkArgument(const Action& action)const
         forCount >> readVariable;
         counter++;
     }
-    /*int counter = 0, first = 0;
-    for (size_t i = 0; i < line.size() ; i++)
-    {
-        if (i == 0)
-            first = line[i];
-        if (line[i] == ' ')
-            counter++;
-    }*/
-
-    if (action == Action::Resize /*&& counter != 1*/)
+    if (action == Action::Read)
     {
         if (counter != 1)
             throw ArgumentProblem();
     }
-    else if (action == Action::Poly /*&& (first != (counter-1))*/)
-    {//clear the forCount
+    else if (action == Action::Resize)
+    {
+        if (counter != 1)
+            throw ArgumentProblem();
+    }
+    else if (action == Action::Poly)
+    {   //clear the forCount to read the data once again
+        forCount.clear();
         forCount << line;
         forCount >> first;
         if (first != counter - 1)
             throw ArgumentProblem();
     }
     //if help do the func anyway
-    else if(counter != 2 )//&& action != Action::Help && action != Action::Exit)
+    else if(counter != 2 )
         throw ArgumentProblem();
 
     // Return to position before "Read line".
-    //(*m_istr).seekg(-len, std::ios_base::cur);
     (*m_istr).seekg(len, std::ios_base::beg);
 
 }
