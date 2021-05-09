@@ -277,16 +277,12 @@ void FunctionCalculator::checkArgument(const Action& action)const
         forCount >> readVariable;
         counter++;
     }
-    /*int counter = 0, first = 0;
-    for (size_t i = 0; i < line.size() ; i++)
+    if (action == Action::Read)
     {
-        if (i == 0)
-            first = line[i];
-        if (line[i] == ' ')
-            counter++;
-    }*/
-
-    if (action == Action::Resize /*&& counter != 1*/)
+        if (counter != 1)
+            throw ArgumentProblem();
+    }
+    else if (action == Action::Resize /*&& counter != 1*/)
     {
         if (counter != 1)
             throw ArgumentProblem();
