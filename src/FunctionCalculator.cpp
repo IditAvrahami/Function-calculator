@@ -321,7 +321,6 @@ void FunctionCalculator::excLetter()const
     }
 }
 
-
 void FunctionCalculator::printFunctions() const
 {
     m_ostr << "you can have " << m_maxSize << " functions.\n";

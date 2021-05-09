@@ -72,9 +72,9 @@ private:
         std::string command;
         std::string description;
         Action action;
-        int arguments;///////////////////////////
     };
     void checkArgument(const Action& action)const;
+    
     using ActionMap = std::vector<ActionDetails>;
     using FunctionList = std::vector<std::shared_ptr<Function>>;
 
